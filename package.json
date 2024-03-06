@@ -1,0 +1,25 @@
+{
+  "name": "@marplex/hono-azurefunc-adapter",
+  "version": "1.0.0",
+  "description": "Azure Functions adapter for Hono. Run Hono on Azure Functions.",
+  "keywords": ["hono","azure functions", "serverless", "http", "http framework"],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@azure/functions": "^4.1.0",
+    "@types/node": "^20.10.0",
+    "hono": "^4.0.3",
+    "typescript": "^5.3.2"
+  },
+  "license": "MIT"
+}

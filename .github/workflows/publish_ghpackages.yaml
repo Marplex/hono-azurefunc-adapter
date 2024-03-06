@@ -1,0 +1,27 @@
+name: Publish package to GitHub Packages
+on:
+  release:
+    types: [created]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.4.0'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@marplex'
+      - name: Install dependencies
+        run: npm install
+      - name: Setup github package registry
+        run: 'echo "registry=https://npm.pkg.github.com/@marplex" >> .npmrc'
+      - name: Build
+        run: npm run build
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
