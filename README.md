@@ -77,7 +77,7 @@ The default Azure Functions route prefix is `/api`. Be sure to start all your Ho
 
 ### Crypto
 
-If you are using `hono/bearer-auth` or any other library that uses crypto, be sure to define `global.crypto = require("crypto");` before registering the http trigger.
+In Node <=18 environments, if you are using `hono/bearer-auth` or any other library that uses crypto, be sure to define `global.crypto = require("crypto");` before registering the http trigger.
 
 ### Request signal
 
