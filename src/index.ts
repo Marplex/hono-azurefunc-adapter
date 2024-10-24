@@ -1,4 +1,4 @@
-import { HttpRequest, InvocationContext } from "@azure/functions";
+import type { HttpRequest, InvocationContext } from "@azure/functions";
 import { newRequestFromAzureFunctions } from "./request";
 import { newAzureFunctionsResponse } from "./response";
 

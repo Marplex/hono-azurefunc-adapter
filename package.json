@@ -1,6 +1,6 @@
 {
   "name": "@marplex/hono-azurefunc-adapter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Azure Functions adapter for Hono. Run Hono on Azure Functions.",
   "keywords": ["hono","azure functions", "serverless", "http", "http framework"],
   "main": "dist/index.js",
