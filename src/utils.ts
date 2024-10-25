@@ -37,7 +37,7 @@ export function parseCookieString(cookieString: string): Cookie {
   const [[name, encodedValue], ...attributesArray] = cookieString
     .split(";")
     .map((x) => x.split("="))
-    .map(([key, value]) => [key.toLowerCase(), value ?? "true"]);
+    .map(([key, value]) => [key.trim().toLowerCase(), value ?? "true"]);
 
   const attrs: Record<string, string> = Object.fromEntries(attributesArray);
   
