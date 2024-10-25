@@ -1,18 +1,20 @@
 import type { HttpResponseInit } from "@azure/functions";
-import { cookieHeaderToConfig, headersToObject, streamToAsyncIterator } from "./utils";
+import {
+  cookiesFromHeaders,
+  headersToObject,
+  streamToAsyncIterator,
+} from "./utils";
 
 export const newAzureFunctionsResponse = (
   response: Response
 ): HttpResponseInit => {
-  let cookies;
-  try {
-    cookies = response.headers.getSetCookie().map(cookieHeaderToConfig);
-    response.headers.delete('set-cookies');
-  } catch {};
+  let headers = headersToObject(response.headers);
+  let cookies = cookiesFromHeaders(response.headers);
+
   return {
-    cookies: cookies,
+    cookies,
+    headers,
     status: response.status,
-    headers: headersToObject(response.headers),
     body: streamToAsyncIterator(response.body),
   };
 }

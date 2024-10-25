@@ -1,9 +1,7 @@
 import type { Cookie } from "@azure/functions";
 
-export const streamToAsyncIterator = (readable: Response['body']) => {
-  if(readable == null) {
-    return null;
-  }
+export const streamToAsyncIterator = (readable: Response["body"]) => {
+  if (readable == null) return null;
   const reader = readable.getReader();
   return {
     next() {
@@ -28,33 +26,30 @@ export function headersToObject(input: LoopableHeader): Record<string, string> {
   return headers;
 }
 
-export function cookieHeaderToConfig(cookie) {
-  const [[name, encodedValue], ...configArray] = cookie.split(/;\s*/).map((assignment) => assignment.split('=')).map(([key, value]) => [key.toLowerCase(), value]),
-    tokenized = Object.fromEntries(configArray),
-    config: Cookie = {
-      name,
-      value: decodeURIComponent(encodedValue)
-    };
-  if (tokenized['max-age']) {
-    config.maxAge = Number.parseInt(tokenized['max-age'], 10);
-  }
-  if (tokenized.path) {
-    config.path = '/api'; // only works like this on swa azure functions v3. Better: tokenized.path;
-  }
-  if (tokenized.samesite) {
-    config.sameSite = tokenized.samesite;
-  }
-  if (Object.hasOwnProperty.call(tokenized, 'secure')) {
-    config.secure = tokenized.secure !== 'false';
-  }
-  if (Object.hasOwnProperty.call(tokenized, 'httponly')) {
-    config.httpOnly = tokenized.httponly !== 'false';
-  }
-  if (tokenized.expires) {
-    config.expires = new Date(tokenized.expires);
-  }
-  if (tokenized.domain) {
-    config.expires = tokenized.Domain;
-  }
-  return config;
+export function cookiesFromHeaders(headers: Headers): Cookie[] | undefined {
+  const cookies = headers.getSetCookie();
+  if (cookies.length === 0) return undefined;
+
+  return cookies.map(parseCookieString);
+}
+
+export function parseCookieString(cookieString: string): Cookie {
+  const [[name, encodedValue], ...attributesArray] = cookieString
+    .split(";")
+    .map((x) => x.split("="))
+    .map(([key, value]) => [key.toLowerCase(), value ?? "true"]);
+
+  const attrs: Record<string, string> = Object.fromEntries(attributesArray);
+  
+  return {
+    name,
+    value: decodeURIComponent(encodedValue),
+    path: attrs["path"],
+    sameSite: attrs["samesite"] as "Strict" | "Lax" | "None" | undefined,
+    secure: attrs["secure"] === "true",
+    httpOnly: attrs["httponly"] === "true",
+    domain: attrs["domain"],
+    expires: attrs["expires"] ? new Date(attrs["expires"]) : undefined,
+    maxAge: attrs["max-age"] ? parseInt(attrs["max-age"]) : undefined,
+  };
 }
